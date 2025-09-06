@@ -78,6 +78,8 @@ const App = ()=>{
         escribirDB(datos)
 
         modificarCitas(leerDB() ?? [])
+
+        toast.success("Turno cargado exitosamente")
     }
 
 
@@ -146,10 +148,10 @@ const App = ()=>{
             </form>
         </Contenedor>
         
-        <Contenedor className="bg-amber-50/20">
+        <Contenedor className="bg-amber-50/40">
         <div>
             <h2 className="text-4xl font-bold text-center mt-4 text-indigo-800">Turnos</h2>
-            <div className="h-[450px] overflow-auto">
+            <div className="h-[450px] overflow-auto flex flex-col gap-1 p-2">
                 {
                     citas.map(cita=>{
                         return <Tarjeta

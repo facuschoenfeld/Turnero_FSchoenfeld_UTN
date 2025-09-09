@@ -10,8 +10,12 @@ const Tarjeta = ({cita, modificar, borrar}) => {
                 <p>Telefono: {cita.telefono}</p>
             </div>
             <div className="flex flex-col items-end justify-center">
-                <button className="p-0.5 rounded hover:bg-blue-700/20 cursor-pointer" title="Editar"><Edit color="blue"/></button>
-                <button className="p-0.5 rounded hover:bg-red-600/20 cursor-pointer" title="Borrar"><Delete color="red"/></button>
+                <button
+                onClick={()=>modificar(cita.id)} 
+                className="p-0.5 rounded hover:bg-blue-700/20 cursor-pointer" title="Editar"><Edit color="blue"/></button>
+                <button
+                onClick={()=>borrar()} 
+                className="p-0.5 rounded hover:bg-red-600/20 cursor-pointer" title="Borrar"><Delete color="red"/></button>
             </div>
         </div>
     )

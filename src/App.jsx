@@ -13,6 +13,7 @@ const App = ()=>{
     const [fecha, modificarFecha] = useState("")
     const [telefono, modificarTelefono] = useState("")
     const [citas, modificarCitas] = useState(leerDB() ?? [])
+    const [id, modificarId] = useState(null)  
 
     const fechaHoy = new Date().toISOString().slice(0, 10)
     const semanaDespues = new Date()
@@ -58,8 +59,59 @@ const App = ()=>{
                     }
     }
 
+    const borrarCita = ()=>{
+        alert("borrando")
+    }
+
+    const editarCita = (id)=>{
+        const [citaFiltrada] = citas.filter((cita)=>{
+            if(cita.id === id){
+                return cita
+            }
+        })
+
+        modificarId(citaFiltrada.id)
+        modificarNombreCompleto(citaFiltrada.nombreCompleto)
+        modificarFecha(citaFiltrada.fecha)
+        modificarHorario(citaFiltrada.horario)
+        modificarTelefono(citaFiltrada.telefono)
+    }
+
+    const limpiarEstados = ()=>{
+        modificarId(null)
+        modificarNombreCompleto("")
+        modificarHorario("")
+        modificarFecha("")
+        modificarTelefono("")
+    }
+
+    const modificarGuardarCita = ()=>{
+        const citasModificadas = citas.map((cita)=>{
+            if(cita.id === id){
+                return{
+                    id: id,
+                    nombreCompleto,
+                    fecha,
+                    horario,
+                    telefono
+                }
+            }
+            return cita
+        })
+
+        escribirDB(citasModificadas)
+        modificarCitas(leerDB())
+        limpiarEstados()
+        toast.success("Cita modificada con exito")
+    }
+
     const enviarFormulario = (evento)=>{
         evento.preventDefault()
+
+        if(id !== null){
+            modificarGuardarCita()
+            return
+        }
 
         if([nombreCompleto, fecha, horario, telefono].includes("")){
             toast.error("Todos los campos son obligatorios")
@@ -67,6 +119,7 @@ const App = ()=>{
         }
 
         const turno = {
+            id: uuidv4(),
             nombreCompleto,
             fecha,
             horario,
@@ -144,7 +197,7 @@ const App = ()=>{
                 className="w-full p-2 text-center font-bold bg-indigo-800 text-slate-50 rounded-2xl mt-4 cursor-pointer
                 hover:bg-indigo-400 transition-all" 
                 type= "submit" 
-                value= "Agendar" />
+                value= {id !== null ? "Modificar" : "Agendar"}/>
             </form>
         </Contenedor>
         
@@ -155,8 +208,10 @@ const App = ()=>{
                 {
                     citas.map(cita=>{
                         return <Tarjeta
-                        key={cita.id || uuidv4()}
-                        cita={{...cita, id: cita.id || uuidv4()}}
+                        key={cita.id}
+                        cita={cita}
+                        borrar={borrarCita}
+                        modificar={editarCita}
                         />
                     })
                 }

@@ -14,7 +14,7 @@ const Tarjeta = ({cita, modificar, borrar}) => {
                 onClick={()=>modificar(cita.id)} 
                 className="p-0.5 rounded hover:bg-blue-700/20 cursor-pointer" title="Editar"><Edit color="blue"/></button>
                 <button
-                onClick={()=>borrar()} 
+                onClick={()=>borrar(cita.id)} 
                 className="p-0.5 rounded hover:bg-red-600/20 cursor-pointer" title="Borrar"><Delete color="red"/></button>
             </div>
         </div>

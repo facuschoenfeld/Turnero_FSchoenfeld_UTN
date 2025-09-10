@@ -2,7 +2,7 @@ import {useState} from "react"
 import Contenedor from "./components/contenedor"
 import Input from "./components/input"
 import {ToastContainer, toast} from "react-toastify"
-import {leerDB, escribirDB} from "./localstorage"
+import {leerDB, escribirDB, formatoFecha} from "./localstorage"
 import Tarjeta from "./components/tarjeta"
 import { v4 as uuidv4 } from 'uuid'
 
@@ -59,8 +59,24 @@ const App = ()=>{
                     }
     }
 
-    const borrarCita = ()=>{
-        alert("borrando")
+    const borrarCita = (cita)=>{
+        const confirmacion = confirm(`Desea eliminar la cita ${formatoFecha(cita.fecha, cita.horario)}`)
+
+        if(confirmacion){
+            const citasNoEliminadas = citas.filter((c)=>{
+                if(c.id !== cita.id){
+                    return cita
+                }
+            })
+            
+            escribirDB(citasNoEliminadas)
+            modificarCitas(leerDB())
+            toast.info("Se ha eliminado la cita")
+            
+            return
+        }
+
+        toast.info("Se ah cancelado la eliminacion")
     }
 
     const editarCita = (id)=>{
@@ -107,6 +123,15 @@ const App = ()=>{
 
     const enviarFormulario = (evento)=>{
         evento.preventDefault()
+
+        const horarioExistente = citas.some((cita)=>{
+            return cita.horario === horario && cita.fecha === fecha
+            
+        })
+        if(horarioExistente){
+            toast.error("Ya existe un turno en este horario")
+            return
+        }
 
         if(id !== null){
             modificarGuardarCita()
